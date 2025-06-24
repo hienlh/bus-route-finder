@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Đường Xe Buýt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .station-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .station-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .search-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .route-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .route-step {
+            background: white;
+            border-left: 4px solid #4facfe;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .transfer-step {
+            border-left-color: #ff6b6b;
+            background: #fff5f5;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .step-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .total-time {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #d63031;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 Tìm Đường Xe Buýt</h1>
+            <p>Tìm tuyến xe buýt tối ưu giữa hai điểm</p>
+        </div>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label for="start-station">Điểm bắt đầu:</label>
+                <div class="dropdown-container">
+                    <input type="text" id="start-station" class="dropdown-input" placeholder="Tìm kiếm trạm bắt đầu...">
+                    <div id="start-dropdown" class="dropdown-list"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="end-station">Điểm kết thúc:</label>
+                <div class="dropdown-container">
+                    <input type="text" id="end-station" class="dropdown-input" placeholder="Tìm kiếm trạm kết thúc...">
+                    <div id="end-dropdown" class="dropdown-list"></div>
+                </div>
+            </div>
+
+            <button id="search-btn" class="search-btn" disabled>Tìm Đường Đi</button>
+        </div>
+
+        <div id="results-section" class="results-section">
+            <div id="loading" class="loading" style="display: none;">
+                <p>Đang tìm đường đi...</p>
+            </div>
+            
+            <div id="route-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch stations from backend
+        let stations = [];
+        let selectedStart = null;
+        let selectedEnd = null;
+
+        async function fetchStations() {
+            const res = await fetch('http://localhost:8000/stations');
+            stations = await res.json();
+        }
+
+        // Initialize dropdowns
+        function initializeDropdowns() {
+            const startInput = document.getElementById('start-station');
+            const endInput = document.getElementById('end-station');
+            const startDropdown = document.getElementById('start-dropdown');
+            const endDropdown = document.getElementById('end-dropdown');
+
+            // Start station dropdown
+            startInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = stations.filter(station => 
+                    station.name.toLowerCase().includes(query) ||
+                    station.route.toLowerCase().includes(query)
+                );
+                showDropdown(startDropdown, filtered, (station) => {
+                    selectedStart = station;
+                    startInput.value = station.name;
+                    startDropdown.style.display = 'none';
+                    updateSearchButton();
+                });
+            });
+
+            startInput.addEventListener('focus', () => {
+                showDropdown(startDropdown, stations, (station) => {
+                    selectedStart = station;
+                    startInput.value = station.name;
+                    startDropdown.style.display = 'none';
+                    updateSearchButton();
+                });
+            });
+
+            // End station dropdown
+            endInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = stations.filter(station => 
+                    station.name.toLowerCase().includes(query) ||
+                    station.route.toLowerCase().includes(query)
+                );
+                showDropdown(endDropdown, filtered, (station) => {
+                    selectedEnd = station;
+                    endInput.value = station.name;
+                    endDropdown.style.display = 'none';
+                    updateSearchButton();
+                });
+            });
+
+            endInput.addEventListener('focus', () => {
+                showDropdown(endDropdown, stations, (station) => {
+                    selectedEnd = station;
+                    endInput.value = station.name;
+                    endDropdown.style.display = 'none';
+                    updateSearchButton();
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown-container')) {
+                    startDropdown.style.display = 'none';
+                    endDropdown.style.display = 'none';
+                }
+            });
+        }
+
+        function showDropdown(dropdown, items, onSelect) {
+            dropdown.innerHTML = '';
+            
+            if (items.length === 0) {
+                dropdown.innerHTML = '<div class="dropdown-item">Không tìm thấy trạm</div>';
+            } else {
+                items.forEach(station => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.innerHTML = `
+                        <div class="station-name">${station.name}</div>
+                        <div class="station-details">Tuyến ${station.route} | ID: ${station.id}</div>
+                    `;
+                    item.addEventListener('click', () => onSelect(station));
+                    dropdown.appendChild(item);
+                });
+            }
+            
+            dropdown.style.display = 'block';
+        }
+
+        function updateSearchButton() {
+            const searchBtn = document.getElementById('search-btn');
+            searchBtn.disabled = !(selectedStart && selectedEnd);
+        }
+
+        async function findRoute(startStation, endStation) {
+            const res = await fetch('http://localhost:8000/route', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ start_id: startStation.id, end_id: endStation.id })
+            });
+            if (!res.ok) {
+                throw new Error('Không tìm thấy đường đi hoặc lỗi server');
+            }
+            return await res.json();
+        }
+
+        function displayRoute(route) {
+            const resultsSection = document.getElementById('results-section');
+            const routeResults = document.getElementById('route-results');
+            
+            resultsSection.style.display = 'block';
+            
+            let html = '<div class="route-info">';
+            html += '<h3>📋 Thông tin tuyến đường</h3>';
+            html += '</div>';
+            
+            route.steps.forEach((step, index) => {
+                let stepClass = 'route-step';
+                if (step.type === 'transfer') stepClass += ' transfer-step';
+                html += `
+                    <div class="${stepClass}">
+                        <div class="step-title">
+                            ${step.type === 'start' ? '🚏 Bắt đầu' : 
+                              step.type === 'transfer' ? '🔄 Chuyển tuyến' : 
+                              step.type === 'end' ? '🏁 Kết thúc' : '➡️ Tiếp tục'}
+                        </div>
+                        <div class="step-details">
+                            ${step.station} ${step.route ? `(Tuyến ${step.route})` : ''}
+                            <br>
+                            ${step.details}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="total-time">
+                    ⏱️ Tổng thời gian: ${route.totalTime} phút
+                </div>
+            `;
+            
+            routeResults.innerHTML = html;
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchStations();
+            initializeDropdowns();
+            
+            document.getElementById('search-btn').addEventListener('click', async () => {
+                if (!selectedStart || !selectedEnd) return;
+                
+                const loading = document.getElementById('loading');
+                const routeResults = document.getElementById('route-results');
+                
+                loading.style.display = 'block';
+                routeResults.innerHTML = '';
+                
+                try {
+                    const route = await findRoute(selectedStart, selectedEnd);
+                    loading.style.display = 'none';
+                    displayRoute(route);
+                } catch (error) {
+                    loading.style.display = 'none';
+                    routeResults.innerHTML = `<div class='error'>${error.message}</div>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
