@@ -14,12 +14,13 @@ def haversine(lat1, lon1, lat2, lon2):
 
 # Lớp đại diện cho trạm xe buýt
 class BusStop:
-    def __init__(self, station_id, name, lat, lng, route_no):
+    def __init__(self, station_id, name, lat, lng, route_no, address=""):
         self.station_id = station_id
         self.name = name
         self.lat = lat
         self.lng = lng
         self.route_no = route_no  # Tuyến đi qua trạm
+        self.address = address  # Địa chỉ trạm
 
 # Hàm đọc dữ liệu từ nhiều file JSON
 def load_routes(route_files):
@@ -38,7 +39,8 @@ def load_routes(route_files):
                     station['stationName'],
                     station['lat'],
                     station['lng'],
-                    route_no
+                    route_no,
+                    station.get('stationAddress', '')  # Lấy địa chỉ, mặc định là chuỗi rỗng nếu không có
                 )
                 stops.append(stop)
                 routes[route_no].append(station['stationId'])

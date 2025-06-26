@@ -36,7 +36,8 @@ def stations():
             'name': stop.name,
             'route': stop.route_no,
             'lat': stop.lat,
-            'lng': stop.lng
+            'lng': stop.lng,
+            'address': stop.address
         }
         for stop in unique_stops
     ]
@@ -63,6 +64,7 @@ def route():
                 'type': 'transfer',
                 'station': stop.name,
                 'route': stop.route_no,
+                'address': stop.address,
                 'details': route_info
             })
         elif route_info != current_route:
@@ -70,6 +72,7 @@ def route():
                 'type': 'start' if i == 0 else 'continue',
                 'station': stop.name,
                 'route': route_info,
+                'address': stop.address,
                 'details': 'Lên xe tuyến {} tại {}'.format(route_info, stop.name)
             })
             current_route = route_info
@@ -78,6 +81,7 @@ def route():
                 'type': 'pass',
                 'station': stop.name,
                 'route': route_info,
+                'address': stop.address,
                 'details': 'Đi qua {}'.format(stop.name)
             })
     # Add end step
@@ -85,6 +89,7 @@ def route():
         'type': 'end',
         'station': stop_dict[path[-1]].name,
         'route': route_path[-1],
+        'address': stop_dict[path[-1]].address,
         'details': 'Đến điểm đích'
     })
     return jsonify({
