@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, jsonify, request
-from bus_route_finder import load_routes, build_graph, a_star, BusStop
+from bus_route_finder import load_routes, build_graph, dijkstra, BusStop
 import os
 import json
 from flask_cors import CORS
@@ -52,7 +52,7 @@ def route():
         return jsonify({'error': 'Missing start_id or end_id'}), 400
     if start_id not in stop_dict or end_id not in stop_dict:
         return jsonify({'error': 'Invalid station id'}), 400
-    path, route_path, total_time = a_star(start_id, end_id, graph, stop_dict)
+    path, route_path, total_time = dijkstra(start_id, end_id, graph, stop_dict)
     if not path:
         return jsonify({'error': 'No route found'}), 404
     steps = []

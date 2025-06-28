@@ -1,0 +1,35 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{dijkstra}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{start\PYGZus{}station\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{,} \PYG{n}{end\PYGZus{}station\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{PathResult}\PYG{p}{:}
+    \PYG{k}{if} \PYG{n}{start\PYGZus{}station\PYGZus{}id} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{stations} \PYG{o+ow}{or} \PYG{n}{end\PYGZus{}station\PYGZus{}id} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{stations}\PYG{p}{:}
+        \PYG{k}{return} \PYG{n}{PathResult}\PYG{p}{(}\PYG{n}{found}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{,} \PYG{n}{message}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Trạm không tồn tại trong hệ thống}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+    \PYG{n}{distances} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{station\PYGZus{}id}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{inf}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)} \PYG{k}{for} \PYG{n}{station\PYGZus{}id} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{stations}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{distances}\PYG{p}{[}\PYG{n}{start\PYGZus{}station\PYGZus{}id}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{n}{previous} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{station\PYGZus{}id}\PYG{p}{:} \PYG{k+kc}{None} \PYG{k}{for} \PYG{n}{station\PYGZus{}id} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{stations}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{visited} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{pq} \PYG{o}{=} \PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{start\PYGZus{}station\PYGZus{}id}\PYG{p}{)}\PYG{p}{]}
+
+    \PYG{k}{while} \PYG{n}{pq}\PYG{p}{:}
+        \PYG{n}{current\PYGZus{}distance}\PYG{p}{,} \PYG{n}{current\PYGZus{}station} \PYG{o}{=} \PYG{n}{heapq}\PYG{o}{.}\PYG{n}{heappop}\PYG{p}{(}\PYG{n}{pq}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{current\PYGZus{}station} \PYG{o+ow}{in} \PYG{n}{visited}\PYG{p}{:}
+            \PYG{k}{continue}
+        \PYG{n}{visited}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{current\PYGZus{}station}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{current\PYGZus{}station} \PYG{o}{==} \PYG{n}{end\PYGZus{}station\PYGZus{}id}\PYG{p}{:}
+            \PYG{k}{break}
+        \PYG{k}{for} \PYG{n}{edge} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{current\PYGZus{}station}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{neighbor\PYGZus{}id} \PYG{o}{=} \PYG{n}{edge}\PYG{o}{.}\PYG{n}{neighbor}
+            \PYG{n}{weight} \PYG{o}{=} \PYG{n}{edge}\PYG{o}{.}\PYG{n}{weight}
+            \PYG{k}{if} \PYG{n}{neighbor\PYGZus{}id} \PYG{o+ow}{in} \PYG{n}{visited}\PYG{p}{:}
+                \PYG{k}{continue}
+            \PYG{n}{new\PYGZus{}distance} \PYG{o}{=} \PYG{n}{current\PYGZus{}distance} \PYG{o}{+} \PYG{n}{weight}
+            \PYG{k}{if} \PYG{n}{new\PYGZus{}distance} \PYG{o}{\PYGZlt{}} \PYG{n}{distances}\PYG{p}{[}\PYG{n}{neighbor\PYGZus{}id}\PYG{p}{]}\PYG{p}{:}
+                \PYG{n}{distances}\PYG{p}{[}\PYG{n}{neighbor\PYGZus{}id}\PYG{p}{]} \PYG{o}{=} \PYG{n}{new\PYGZus{}distance}
+                \PYG{n}{previous}\PYG{p}{[}\PYG{n}{neighbor\PYGZus{}id}\PYG{p}{]} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+                    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{station\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{current\PYGZus{}station}\PYG{p}{,}
+                    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{route\PYGZus{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{edge}\PYG{o}{.}\PYG{n}{route\PYGZus{}id}\PYG{p}{,}
+                    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{route\PYGZus{}no}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{n}{edge}\PYG{o}{.}\PYG{n}{route\PYGZus{}no}
+                \PYG{p}{\PYGZcb{}}
+                \PYG{n}{heapq}\PYG{o}{.}\PYG{n}{heappush}\PYG{p}{(}\PYG{n}{pq}\PYG{p}{,} \PYG{p}{(}\PYG{n}{new\PYGZus{}distance}\PYG{p}{,} \PYG{n}{neighbor\PYGZus{}id}\PYG{p}{)}\PYG{p}{)}
+
+    \PYG{k}{return} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{\PYGZus{}build\PYGZus{}path}\PYG{p}{(}\PYG{n}{start\PYGZus{}station\PYGZus{}id}\PYG{p}{,} \PYG{n}{end\PYGZus{}station\PYGZus{}id}\PYG{p}{,} \PYG{n}{distances}\PYG{p}{,} \PYG{n}{previous}\PYG{p}{)}
+\end{MintedVerbatim}

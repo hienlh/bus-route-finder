@@ -1,0 +1,35 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{heuristic}\PYG{p}{(}\PYG{n}{stop\PYGZus{}id}\PYG{p}{,} \PYG{n}{goal\PYGZus{}id}\PYG{p}{,} \PYG{n}{stop\PYGZus{}dict}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Hàm heuristic\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{stop1} \PYG{o}{=} \PYG{n}{stop\PYGZus{}dict}\PYG{p}{[}\PYG{n}{stop\PYGZus{}id}\PYG{p}{]}
+    \PYG{n}{stop2} \PYG{o}{=} \PYG{n}{stop\PYGZus{}dict}\PYG{p}{[}\PYG{n}{goal\PYGZus{}id}\PYG{p}{]}
+    \PYG{n}{distance} \PYG{o}{=} \PYG{n}{haversine}\PYG{p}{(}\PYG{n}{stop1}\PYG{o}{.}\PYG{n}{lat}\PYG{p}{,} \PYG{n}{stop1}\PYG{o}{.}\PYG{n}{lng}\PYG{p}{,} \PYG{n}{stop2}\PYG{o}{.}\PYG{n}{lat}\PYG{p}{,} \PYG{n}{stop2}\PYG{o}{.}\PYG{n}{lng}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{distance} \PYG{o}{*} \PYG{l+m+mi}{2}  \PYG{c+c1}{\PYGZsh{} Thời gian ước lượng (phút)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{a\PYGZus{}star}\PYG{p}{(}\PYG{n}{start\PYGZus{}id}\PYG{p}{,} \PYG{n}{goal\PYGZus{}id}\PYG{p}{,} \PYG{n}{graph}\PYG{p}{,} \PYG{n}{stop\PYGZus{}dict}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Thuật toán A* tìm đường đi ngắn nhất\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{queue} \PYG{o}{=} \PYG{p}{[}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{start\PYGZus{}id}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} (f, g, node, path, routes)}
+    \PYG{n}{visited} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{p}{)}
+
+    \PYG{k}{while} \PYG{n}{queue}\PYG{p}{:}
+        \PYG{n}{f}\PYG{p}{,} \PYG{n}{g}\PYG{p}{,} \PYG{n}{node}\PYG{p}{,} \PYG{n}{path}\PYG{p}{,} \PYG{n}{route\PYGZus{}path} \PYG{o}{=} \PYG{n}{heapq}\PYG{o}{.}\PYG{n}{heappop}\PYG{p}{(}\PYG{n}{queue}\PYG{p}{)}
+        \PYG{n}{state} \PYG{o}{=} \PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{n+nb}{tuple}\PYG{p}{(}\PYG{n}{route\PYGZus{}path}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{p}{]}\PYG{p}{)}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{state} \PYG{o+ow}{in} \PYG{n}{visited}\PYG{p}{:}
+            \PYG{k}{continue}
+        \PYG{n}{visited}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{state}\PYG{p}{)}
+
+        \PYG{n}{path} \PYG{o}{=} \PYG{n}{path} \PYG{o}{+} \PYG{p}{[}\PYG{n}{node}\PYG{p}{]}
+
+        \PYG{k}{if} \PYG{n}{node} \PYG{o}{==} \PYG{n}{goal\PYGZus{}id}\PYG{p}{:}
+            \PYG{k}{return} \PYG{n}{path}\PYG{p}{,} \PYG{n}{route\PYGZus{}path}\PYG{p}{,} \PYG{n}{g}
+
+        \PYG{k}{for} \PYG{n}{neighbor}\PYG{p}{,} \PYG{n}{cost}\PYG{p}{,} \PYG{n}{route\PYGZus{}info} \PYG{o+ow}{in} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{node}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}\PYG{p}{:}
+            \PYG{k}{if} \PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,} \PYG{n}{route\PYGZus{}info}\PYG{p}{)} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{visited}\PYG{p}{:}
+                \PYG{n}{new\PYGZus{}g} \PYG{o}{=} \PYG{n}{g} \PYG{o}{+} \PYG{n}{cost}
+                \PYG{n}{h} \PYG{o}{=} \PYG{n}{heuristic}\PYG{p}{(}\PYG{n}{neighbor}\PYG{p}{,} \PYG{n}{goal\PYGZus{}id}\PYG{p}{,} \PYG{n}{stop\PYGZus{}dict}\PYG{p}{)}
+                \PYG{n}{f} \PYG{o}{=} \PYG{n}{new\PYGZus{}g} \PYG{o}{+} \PYG{n}{h}
+                \PYG{n}{new\PYGZus{}route\PYGZus{}path} \PYG{o}{=} \PYG{n}{route\PYGZus{}path} \PYG{o}{+} \PYG{p}{[}\PYG{n}{route\PYGZus{}info}\PYG{p}{]}
+                \PYG{n}{heapq}\PYG{o}{.}\PYG{n}{heappush}\PYG{p}{(}\PYG{n}{queue}\PYG{p}{,} \PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{new\PYGZus{}g}\PYG{p}{,} \PYG{n}{neighbor}\PYG{p}{,} \PYG{n}{path}\PYG{p}{,} \PYG{n}{new\PYGZus{}route\PYGZus{}path}\PYG{p}{)}\PYG{p}{)}
+
+    \PYG{k}{return} \PYG{k+kc}{None}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{,} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{inf}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+\end{MintedVerbatim}

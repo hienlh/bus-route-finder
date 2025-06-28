@@ -1,0 +1,20 @@
+\contentsline {section}{\numberline {1}Giới thiệu}{2}{section.1}%
+\contentsline {section}{\numberline {2}Mô tả bài toán}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Yêu cầu bài toán}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Mô hình hóa bài toán}{2}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Phương pháp triển khai}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Cấu trúc dữ liệu}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Thuật toán Dijkstra}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Tính năng hệ thống}{4}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Phân tích thuật toán}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Độ phức tạp}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Hiệu suất thực tế}{5}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Kết quả}{5}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Thử nghiệm}{5}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Minh họa}{5}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Đánh giá và hạn chế}{7}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Ưu điểm}{7}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Hạn chế}{7}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Đề xuất cải tiến}{8}{section.7}%
+\contentsline {section}{\numberline {8}Kết luận}{8}{section.8}%
+\contentsline {section}{Tài liệu tham khảo}{9}{section.8}%

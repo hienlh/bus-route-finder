@@ -118,6 +118,31 @@ def a_star(start_id, goal_id, graph, stop_dict):
     
     return None, None, float('inf')
 
+# Thuật toán Dijkstra
+def dijkstra(start_id, goal_id, graph, stop_dict):
+    queue = [(0, start_id, [], [])]  # (g, node, path, routes)
+    visited = set()
+    
+    while queue:
+        g, node, path, route_path = heapq.heappop(queue)
+        state = (node, tuple(route_path[-1:]))
+        if state in visited:
+            continue
+        visited.add(state)
+        
+        path = path + [node]
+        
+        if node == goal_id:
+            return path, route_path, g
+        
+        for neighbor, cost, route_info in graph.get(node, []):
+            if (neighbor, route_info) not in visited:
+                new_g = g + cost
+                new_route_path = route_path + [route_info]
+                heapq.heappush(queue, (new_g, neighbor, path, new_route_path))
+    
+    return None, None, float('inf')
+
 folder_path = 'routes'
 route_files = []
 for filename in os.listdir(folder_path):
@@ -182,6 +207,7 @@ unique_stops = get_unique_stations(stops)
 
 # Tìm đường đi
 # path, route_path, total_time = a_star(start_stop.station_id, goal_stop.station_id, graph, stop_dict)
+# path, route_path, total_time = dijkstra(start_stop.station_id, goal_stop.station_id, graph, stop_dict)
 
 # # In kết quả
 # if path:
